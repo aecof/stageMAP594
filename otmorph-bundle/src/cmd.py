@@ -93,7 +93,7 @@ def volume_semi_morphOT(session, volumes, frames = 25, ot_frames = 4, start = 0,
         downscale_ratio = round(max(list(set(vs))[0])/maxsize)
         step = downscale_ratio 
 
-    print(step)
+    
 
     if reg == None : 
         reg = max(volumes[0].matrix(step = step, subregion = subregion).shape) / 60.
@@ -144,7 +144,7 @@ def volume_barycenterOT(session, volumes, weights, niter = 20, reg = None, inter
 
 
 def volume_barycenterSave(session, volumes, folder, frames = 25, niter = 20, reg = None, rate = 'Linear', interpolate_colors = True,
-            subregion = 'all', step = 1, model_id = None, name1 = None, name2 = None):
+            subregion = 'all', step = 1, model_id = None, maxsize = None, name1 = None, name2 = None):
     '''OT interpolate between maps.'''
     if len(volumes) < 2:
         raise CommandError('volume morph requires 2 or more volumes, got %d' % len(volumes))
@@ -161,6 +161,13 @@ def volume_barycenterSave(session, volumes, folder, frames = 25, niter = 20, reg
     if frames > 0 :
         play_step = 1./frames
 
+    if not (maxsize == None):
+        if np.product(vs[0]) > maxsize**3 : 
+            print('Your structure is bigger than maxsize, resizing for better tractability')
+            print('resizing volumes to maxsize')
+            print('You can change maxsize option to prevent resizing')
+            downscale_ratio = round(max(list(set(vs))[0])/maxsize)
+            step = downscale_ratio 
 
     if reg == None : 
         reg = max(volumes[0].matrix(step = step, subregion = subregion).shape)/60.
@@ -171,7 +178,7 @@ def volume_barycenterSave(session, volumes, folder, frames = 25, niter = 20, reg
 
 
 def volume_linearBarycenterSave(session, volumes, folder, frames = 25, niter = 20, reg = None, rate = 'Linear', interpolate_colors = True,
-            subregion = 'all', step = 1, model_id = None):
+            subregion = 'all', step = 1, maxsize = None, model_id = None):
     '''OT interpolate between maps.'''
     if len(volumes) < 2:
         raise CommandError('volume morph requires 2 or more volumes, got %d' % len(volumes))
@@ -187,6 +194,15 @@ def volume_linearBarycenterSave(session, volumes, folder, frames = 25, niter = 2
 
     if frames > 0 :
         play_step = 1./frames
+
+
+    if not (maxsize == None):
+        if np.product(vs[0]) > maxsize**3 : 
+            print('Your structure is bigger than maxsize, resizing for better tractability')
+            print('resizing volumes to maxsize')
+            print('You can change maxsize option to prevent resizing')
+            downscale_ratio = round(max(list(set(vs))[0])/maxsize)
+            step = downscale_ratio 
 
     if reg == None : 
         reg = max(volumes[0].matrix(step = step, subregion = subregion).shape)/60.
